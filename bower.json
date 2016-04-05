@@ -14,6 +14,8 @@
     "purescript-console": "^0.1.0",
     "purescript-foldable-traversable": "^0.4.2",
     "purescript-transformers": "^0.8.4",
-    "purescript-identity": "^0.4.1"
+    "purescript-identity": "^0.4.1",
+    "purescript-trees": "https://github.com/jplatte/purescript-trees.git#master",
+    "purescript-lists": "^0.7.10"
   }
 }
