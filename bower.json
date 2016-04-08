@@ -20,6 +20,7 @@
     "purescript-quickcheck": "^0.12.2"
   },
   "devDependencies": {
-    "purescript-quickcheck-laws": "^0.1.1"
+    "purescript-quickcheck-laws": "^0.1.1",
+    "purescript-test-unit": "^4.1.0"
   }
 }

@@ -6,7 +6,6 @@ import Data.Array (index, updateAt, length)
 import Data.Maybe (Maybe(), fromMaybe)
 import Data.Tree (Tree(..))
 import Data.List (List(Nil), (:), uncons)
-import Data.Foldable (foldl)
 import Data.Tuple (Tuple(Tuple))
 
 import Test.QuickCheck.Arbitrary (class Coarbitrary, class Arbitrary,
@@ -24,6 +23,10 @@ data TreeZipper a
 type Past a
     = List (Tuple Int (Tree a))
 
+-- | Creates a `TreeZipper` from a `Tree`.
+makeZipper :: forall a. Tree a -> TreeZipper a
+makeZipper = flip TreeZipper Nil
+
 -- | Extracts the tree from a tree zipper.
 getTree :: forall a. TreeZipper a -> Tree a
 getTree (TreeZipper s _) = s
@@ -36,8 +39,8 @@ getPast (TreeZipper _ p) = p
 -- | the top.
 up :: forall a. TreeZipper a -> Maybe (TreeZipper a)
 up (TreeZipper t past) = do
-    { head: Tuple i oldTree@(Tree a ts), tail } <- uncons past
-    tree <- Tree a <$> updateAt i oldTree ts
+    { head: Tuple i (Tree a ts), tail } <- uncons past
+    tree <- Tree a <$> updateAt i t ts
     pure (TreeZipper tree tail)
 
 -- | Moves down into the selected index. Returns `Nothing` if the current tree
@@ -85,6 +88,11 @@ singleton a = TreeZipper (pure a) Nil
 
 instance eqTreeZipper :: Eq a => Eq (TreeZipper a) where
     eq (TreeZipper x xs) (TreeZipper y ys) = eq x y && eq xs ys
+
+instance showTreeZipper :: Show a => Show (TreeZipper a) where
+    show (TreeZipper t p) =
+        "TreeZipper { getTree = " <> show t <> ", getPast = " <> show p <> " }"
+
 
 instance functorTreeZipper :: Functor TreeZipper where
     map f (TreeZipper tree past) =
