@@ -14,6 +14,7 @@ current tree and a list of past trees.
 ##### Instances
 ``` purescript
 (Eq a) => Eq (TreeZipper a)
+(Show a) => Show (TreeZipper a)
 Functor TreeZipper
 (Arbitrary a) => Arbitrary (TreeZipper a)
 (Coarbitrary a) => Coarbitrary (TreeZipper a)
@@ -27,6 +28,14 @@ type Past a = List (Tuple Int (Tree a))
 
 The history of a traversal in a tree structure is a list of integer indexes
 and the parent tree that was traversed to get there.
+
+#### `makeZipper`
+
+``` purescript
+makeZipper :: forall a. Tree a -> TreeZipper a
+```
+
+Creates a `TreeZipper` from a `Tree`.
 
 #### `getTree`
 
@@ -43,6 +52,14 @@ getPast :: forall a. TreeZipper a -> Past a
 ```
 
 Extracts the past trees from a tree zipper.
+
+#### `zipUp`
+
+``` purescript
+zipUp :: forall a. TreeZipper a -> Tree a
+```
+
+Returns the tree resulting from zipping all the way back up the path.
 
 #### `up`
 

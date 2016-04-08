@@ -4,6 +4,9 @@ import Prelude
 import Control.Bind
 import Control.Plus
 
+import Control.Monad.Eff.Class
+
+import Data.Foldable
 import Data.Zipper.Tree
 import Data.Tree
 
@@ -12,6 +15,7 @@ import Test.Unit.Assert as Assert
 import Control.Monad.Eff.Console (log)
 
 import Test.QuickCheck (Result, (===))
+import Test.QuickCheck.Gen
 import Test.Unit.QuickCheck
 
 import Type.Proxy (Proxy(..), Proxy2(..))
@@ -53,6 +57,10 @@ testTreeZipper = do
             quickCheck upDownProperty
         test "repeated left/right is idempotent" do
             quickCheck leftRightProperty
+        test "zipUp doesn't change" do
+            l <- liftEff $ randomSample (elements id (map tryOr [up, down 0, left,
+                               right]))
+            quickCheck (zipRandomWalk l)
 
 upDownProperty :: TreeZipper Number -> Result
 upDownProperty x =
@@ -61,3 +69,8 @@ upDownProperty x =
 leftRightProperty :: TreeZipper Number -> Result
 leftRightProperty x =
     left x >>= right >>= left >>= right === left x >>= right
+
+zipRandomWalk :: Array (TreeZipper Number -> TreeZipper Number)
+              -> TreeZipper Number
+              -> Result
+zipRandomWalk moves tz = zipUp tz === zipUp (foldl (<<<) id moves tz)

@@ -3,7 +3,7 @@ module Data.Zipper.Tree where
 import Prelude
 
 import Data.Array (index, updateAt, length)
-import Data.Maybe (Maybe(), fromMaybe)
+import Data.Maybe (Maybe(), fromMaybe, maybe)
 import Data.Tree (Tree(..))
 import Data.List (List(Nil), (:), uncons)
 import Data.Tuple (Tuple(Tuple))
@@ -34,6 +34,12 @@ getTree (TreeZipper s _) = s
 -- | Extracts the past trees from a tree zipper.
 getPast :: forall a. TreeZipper a -> Past a
 getPast (TreeZipper _ p) = p
+
+-- | Returns the tree resulting from zipping all the way back up the path.
+zipUp :: forall a. TreeZipper a -> Tree a
+zipUp = getTree <<< go
+  where
+    go tz = maybe tz go (up tz)
 
 -- | Moves up in the `TreeZipper`. Returns `Nothing` if the zipper is already at
 -- | the top.
